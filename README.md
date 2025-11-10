@@ -9,7 +9,7 @@ Repository: https://github.com/jackdoe/pico2-swd-riscv
 
 ## 0. VIBE CODE WARNING
 
-About 70% of the code is vibe coded; The readme is almost completely generated. I spent nights with the oscilloscope and the docs and made a working prototype that was able ti do sba/read/write regs and do abstract commands and progbuf, the rest was done with claude code.
+About 70% of the code is vibe coded; The readme is almost completely generated. I spent many nights with the oscilloscope and the docs and made a working prototype that was able ti do sba/read/write regs and do abstract commands and progbuf, the rest was done with claude code.
 
 
 ## 1. ARCHITECTURAL OVERVIEW
