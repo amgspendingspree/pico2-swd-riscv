@@ -126,7 +126,10 @@ The DM is itself controlled by an external debugger via a Debug Transport Module
     ┌─────────────┐   ┌──────────────┐
     │  Hart 0     │   │ System Bus   │
     │  (Hazard3)  │   │              │
-    └─────────────┘   └──────────────┘
+    ├─────────────┤   └──────────────┘
+    │  Hart 1     │
+    │  (Hazard3)  │
+    └─────────────┘    
 ```
 
 ### 2.C Debug Mode: A Privileged Exception Context
