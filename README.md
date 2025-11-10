@@ -22,8 +22,15 @@ __The tokens have no reason or purpose__, which makes reading code ridiculously 
 
 In the end I would say I have gained good understanding of the wires, timings, and the lower level ap/dp mechanics, sba and progbuf, but I regret not writing the whole thing myself, even if it would've taken 10x the time.
 
-I fucking hate this.
+I fucking hate this. 
 
+And I can not help, but feel dusgust and shame. Is this what programming is now? I really hope this is some intermediate stage and it changes for the better, the problem is I dont know what "better" is, it seems for some people is not writing the code, for others is not modeling the problem for other is not having to think. For me, I am not sure, I do want to make things, and many times I dont want to know something, but I want to use it, e.g. the rp2350 usb host controller the way you have to re-arm interrupts and the way the epx register is shared is super annoying, for good reasons probably, but I just want to use it to make my CBI driver.
+
+I guess the question is what is the thing I want to make, because you can go way up the stack, from the USB chip registers to CBI to UFI to FAT16 to the OS of the old school computer I am making, but why stop? make the schematics, the pcbs, the cad files, maybe automatically send it to the factory? and then just ship it to me? but why stop? make my webshop, start selling, make a community, ads, marketing, generate some unboxing videos, maybe some viral memes? process the orders directly to the factory, on demand, if there is an issue, it is ready with customer support. 
+
+What do I do in the meanwhile? Sit on the beach? I hate the beach.
+
+Where does it stop?
 
 ## 1. ARCHITECTURAL OVERVIEW
 
