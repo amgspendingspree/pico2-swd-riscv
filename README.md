@@ -2,7 +2,7 @@
 
 A stateful SWD protocol implementation for debugging RP2350 RISC-V cores (Hazard3) from any Raspberry Pi Pico2 (target) using GPIO's on another Pico (probe).
 
-## 0. VIBE CODE WARNING
+## 0. VIBE CODE WARNING (WRITTEN BY HUMAN)
 
 About 80% of the code is vibe coded; The readme is almost completely generated (except the whole vibe-code-warning section). I spent many nights with the oscilloscope and the docs and made a working prototype that was able ti do sba/read/write regs and do abstract commands and progbuf, the rest was done with claude code. The tests are quite [comprehensive test suite](examples/test_suite) and I use the core of the library in my own projects, but, as they say, "hic sunt dracones". I also read the readme and the code didn't notice anything wrong (and removed the wrong/unclear parts).
 
