@@ -157,4 +157,20 @@ extern const uint32_t memory_test_count;
 extern test_case_t trace_tests[];
 extern const uint32_t trace_test_count;
 
+// API coverage tests (test_api_coverage.c)
+extern test_case_t api_coverage_tests[];
+extern const uint32_t api_coverage_test_count;
+
+// Memory operations tests (test_memory_ops.c)
+extern test_case_t memory_ops_tests[];
+extern const uint32_t memory_ops_test_count;
+
+// Cache tests (test_cache.c)
+extern test_case_t cache_tests[];
+extern const uint32_t cache_test_count;
+
+// Code execution tests (test_code_exec.c)
+extern test_case_t code_exec_tests[];
+extern const uint32_t code_exec_test_count;
+
 #endif // TEST_FRAMEWORK_H

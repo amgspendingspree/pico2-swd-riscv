@@ -300,63 +300,19 @@ swd_error_t dap_write_mem32(swd_target_t *target, uint32_t addr, uint32_t value)
     err = dap_write_ap(target, AP_RISCV, AP_DRW, value);
     if (err != SWD_OK) {
         swd_set_error(target, err, "DRW write failed");
+        return err;
     }
 
-    return err;
-}
-
-//==============================================================================
-// Block Memory Operations
-//==============================================================================
-
-swd_error_t dap_read_mem32_block(swd_target_t *target, uint32_t addr,
-                                  uint32_t *buffer, uint32_t count) {
-    if (!target || !buffer || count == 0) {
-        return SWD_ERROR_INVALID_PARAM;
-    }
-
-    if (addr & 0x3) {
-        swd_set_error(target, SWD_ERROR_ALIGNMENT,
-                     "Address 0x%08x not 4-byte aligned", addr);
-        return SWD_ERROR_ALIGNMENT;
-    }
-
-    SWD_INFO("MEM block read: addr=0x%08lx, count=%lu words\n", (unsigned long)addr, (unsigned long)count);
-
-    for (uint32_t i = 0; i < count; i++) {
-        swd_result_t result = dap_read_mem32(target, addr + (i * 4));
-        if (result.error != SWD_OK) {
-            return result.error;
-        }
-        buffer[i] = result.value;
+    // Read RDBUFF to ensure write completes (AP writes are posted/pipelined)
+    swd_result_t dummy = dap_read_dp(target, DP_RDBUFF);
+    if (dummy.error != SWD_OK) {
+        swd_set_error(target, dummy.error, "Failed to complete write");
+        return dummy.error;
     }
 
     return SWD_OK;
 }
 
-swd_error_t dap_write_mem32_block(swd_target_t *target, uint32_t addr,
-                                   const uint32_t *buffer, uint32_t count) {
-    if (!target || !buffer || count == 0) {
-        return SWD_ERROR_INVALID_PARAM;
-    }
-
-    if (addr & 0x3) {
-        swd_set_error(target, SWD_ERROR_ALIGNMENT,
-                     "Address 0x%08x not 4-byte aligned", addr);
-        return SWD_ERROR_ALIGNMENT;
-    }
-
-    SWD_INFO("MEM block write: addr=0x%08lx, count=%lu words\n", (unsigned long)addr, (unsigned long)count);
-
-    for (uint32_t i = 0; i < count; i++) {
-        swd_error_t err = dap_write_mem32(target, addr + (i * 4), buffer[i]);
-        if (err != SWD_OK) {
-            return err;
-        }
-    }
-
-    return SWD_OK;
-}
 
 //==============================================================================
 // Error Management

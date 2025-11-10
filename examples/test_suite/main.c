@@ -82,6 +82,34 @@ static void run_all_tests(void) {
     total_stats.passed += trace_stats.passed;
     total_stats.failed += trace_stats.failed;
 
+    // Run API Coverage tests
+    printf("\n=== API COVERAGE TESTS ===\n");
+    test_stats_t api_stats = test_run_suite(api_coverage_tests, api_coverage_test_count);
+    total_stats.total += api_stats.total;
+    total_stats.passed += api_stats.passed;
+    total_stats.failed += api_stats.failed;
+
+    // Run Memory Operations tests
+    printf("\n=== MEMORY OPERATIONS TESTS ===\n");
+    test_stats_t mem_ops_stats = test_run_suite(memory_ops_tests, memory_ops_test_count);
+    total_stats.total += mem_ops_stats.total;
+    total_stats.passed += mem_ops_stats.passed;
+    total_stats.failed += mem_ops_stats.failed;
+
+    // Run Cache tests
+    printf("\n=== CACHE TESTS ===\n");
+    test_stats_t cache_stats = test_run_suite(cache_tests, cache_test_count);
+    total_stats.total += cache_stats.total;
+    total_stats.passed += cache_stats.passed;
+    total_stats.failed += cache_stats.failed;
+
+    // Run Code Execution tests
+    printf("\n=== CODE EXECUTION TESTS ===\n");
+    test_stats_t code_exec_stats = test_run_suite(code_exec_tests, code_exec_test_count);
+    total_stats.total += code_exec_stats.total;
+    total_stats.passed += code_exec_stats.passed;
+    total_stats.failed += code_exec_stats.failed;
+
     // Print overall statistics
     printf("\n");
     printf("====================================\n");

@@ -249,7 +249,7 @@ static bool test_register_stress(swd_target_t *target) {
 
     rp2350_halt(target, 0);
 
-    uint32_t patterns[] = {
+    const uint32_t patterns[] = {
         0x00000000, 0xFFFFFFFF, 0xAAAAAAAA, 0x55555555,
         0x12345678, 0x87654321, 0xDEADBEEF, 0xCAFEBABE
     };

@@ -10,6 +10,10 @@ add_executable(test_suite
     test_hart1.c
     test_mem.c
     test_trace.c
+    test_api_coverage.c
+    test_memory_ops.c
+    test_cache.c
+    test_code_exec.c
 )
 
 # Link against the library

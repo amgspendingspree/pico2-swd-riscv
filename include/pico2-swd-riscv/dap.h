@@ -132,57 +132,37 @@ swd_error_t dap_write_ap(swd_target_t *target, uint8_t apsel, uint8_t reg, uint3
 //==============================================================================
 
 /**
- * @brief Read 32-bit word from memory
+ * @brief Read 32-bit value using MEM-AP protocol (TAR/DRW/RDBUFF)
  *
- * Reads memory through the currently selected Access Port.
- * Address must be 4-byte aligned.
+ * Low-level function that uses the MEM-AP TAR (Transfer Address Register)
+ * and DRW (Data Read/Write) mechanism with proper RDBUFF handling for
+ * pipelined reads. Primarily used for accessing Debug Module registers.
+ *
+ * For general target memory access, use rp2350_read_mem32() instead,
+ * which uses System Bus Access (SBA).
  *
  * @param target Target to read from
- * @param addr Memory address (must be 4-byte aligned)
- * @return Result containing memory value or error
+ * @param addr Address (must be 4-byte aligned)
+ * @return Result containing value or error
  */
 swd_result_t dap_read_mem32(swd_target_t *target, uint32_t addr);
 
 /**
- * @brief Write 32-bit word to memory
+ * @brief Write 32-bit value using MEM-AP protocol (TAR/DRW/RDBUFF)
  *
- * Writes memory through the currently selected Access Port.
- * Address must be 4-byte aligned.
+ * Low-level function that uses the MEM-AP TAR (Transfer Address Register)
+ * and DRW (Data Read/Write) mechanism with proper RDBUFF handling to ensure
+ * write completion. Primarily used for accessing Debug Module registers.
+ *
+ * For general target memory access, use rp2350_write_mem32() instead,
+ * which uses System Bus Access (SBA).
  *
  * @param target Target to write to
- * @param addr Memory address (must be 4-byte aligned)
+ * @param addr Address (must be 4-byte aligned)
  * @param value Value to write
  * @return SWD_OK on success, error code otherwise
  */
 swd_error_t dap_write_mem32(swd_target_t *target, uint32_t addr, uint32_t value);
-
-/**
- * @brief Read multiple 32-bit words from memory
- *
- * Efficiently reads a block of memory. Addresses must be 4-byte aligned.
- *
- * @param target Target to read from
- * @param addr Starting address (must be 4-byte aligned)
- * @param buffer Buffer to store results
- * @param count Number of 32-bit words to read
- * @return SWD_OK on success, error code otherwise
- */
-swd_error_t dap_read_mem32_block(swd_target_t *target, uint32_t addr,
-                                  uint32_t *buffer, uint32_t count);
-
-/**
- * @brief Write multiple 32-bit words to memory
- *
- * Efficiently writes a block of memory. Addresses must be 4-byte aligned.
- *
- * @param target Target to write to
- * @param addr Starting address (must be 4-byte aligned)
- * @param buffer Data to write
- * @param count Number of 32-bit words to write
- * @return SWD_OK on success, error code otherwise
- */
-swd_error_t dap_write_mem32_block(swd_target_t *target, uint32_t addr,
-                                   const uint32_t *buffer, uint32_t count);
 
 //==============================================================================
 // Error Management

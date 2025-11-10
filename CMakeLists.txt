@@ -68,6 +68,18 @@ target_compile_options(pico2_swd_riscv PRIVATE
     -Wall
     -Wextra
     -Wno-unused-parameter
+    -Wunused-function          # Warn about unused static functions
+    -Wunused-variable          # Warn about unused variables
+    -Wunused-but-set-variable  # Warn about set but unused variables
+    -Wunreachable-code         # Warn about code that will never execute
+    -fdata-sections            # Place each data item in separate section
+    -ffunction-sections        # Place each function in separate section
+)
+
+# Linker options for dead code elimination
+target_link_options(pico2_swd_riscv PRIVATE
+    -Wl,--gc-sections          # Remove unused sections at link time
+    -Wl,--print-gc-sections    # Print what sections are being removed (optional)
 )
 
 # Optional: Build examples if requested

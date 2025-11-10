@@ -59,11 +59,11 @@ static inline bool validate_hart_id(uint8_t hart_id) {
  */
 static inline uint32_t make_dmcontrol(uint8_t hart_id, bool haltreq,
                                        bool resumereq, bool ndmreset) {
-    uint32_t dmcontrol = (1 << 0);  // dmactive = 1
+    uint32_t dmcontrol = (1U << 0);  // dmactive = 1
     dmcontrol |= ((uint32_t)hart_id << 16);  // hartsello[9:0] at bits 25:16
-    if (haltreq) dmcontrol |= (1 << 31);
-    if (resumereq) dmcontrol |= (1 << 30);
-    if (ndmreset) dmcontrol |= (1 << 1);
+    if (haltreq) dmcontrol |= (1U << 31);
+    if (resumereq) dmcontrol |= (1U << 30);
+    if (ndmreset) dmcontrol |= (1U << 1);
     return dmcontrol;
 }
 
@@ -775,7 +775,7 @@ swd_result_t rp2350_read_csr(swd_target_t *target, uint8_t hart_id, uint16_t csr
         return result;
     }
 
-    hart_state_t *hart = &target->rp2350.harts[hart_id];
+    const hart_state_t *hart = &target->rp2350.harts[hart_id];
 
     if (!hart->halted) {
         result.error = SWD_ERROR_NOT_HALTED;
@@ -792,7 +792,7 @@ swd_result_t rp2350_read_csr(swd_target_t *target, uint8_t hart_id, uint16_t csr
     // Build CSR read instruction: csrr s0, csr_addr
     uint32_t csr_inst = 0x00002473 | (csr_addr << 20);  // csrr s0, csr
 
-    uint32_t progbuf[] = {
+    const uint32_t progbuf[] = {
         csr_inst,       // csrr s0, <csr>
         0x00100073      // ebreak
     };
@@ -822,7 +822,7 @@ swd_error_t rp2350_write_csr(swd_target_t *target, uint8_t hart_id, uint16_t csr
         return SWD_ERROR_INVALID_PARAM;
     }
 
-    hart_state_t *hart = &target->rp2350.harts[hart_id];
+    const hart_state_t *hart = &target->rp2350.harts[hart_id];
 
     if (!hart->halted) {
         return SWD_ERROR_NOT_HALTED;
@@ -846,7 +846,7 @@ swd_error_t rp2350_write_csr(swd_target_t *target, uint8_t hart_id, uint16_t csr
     // Build CSR write instruction: csrw csr_addr, s0
     uint32_t csr_inst = 0x00041073 | (csr_addr << 20);  // csrw csr, s0
 
-    uint32_t progbuf[] = {
+    const uint32_t progbuf[] = {
         csr_inst,       // csrw <csr>, s0
         0x00100073      // ebreak
     };

@@ -197,7 +197,7 @@ swd_error_t swd_io_raw(swd_target_t *target, uint8_t request, uint32_t *data, bo
 
 swd_error_t swd_read_dp_raw(swd_target_t *target, uint8_t reg, uint32_t *value) {
     uint8_t request = make_swd_request(false, true, reg);
-    swd_error_t err;
+    swd_error_t err = SWD_ERROR_WAIT;  // Initialize to WAIT in case retry_count is 0
 
     for (uint retry = 0; retry < target->dap.retry_count; retry++) {
         err = swd_io_raw(target, request, value, false);
@@ -210,7 +210,7 @@ swd_error_t swd_read_dp_raw(swd_target_t *target, uint8_t reg, uint32_t *value) 
 
 swd_error_t swd_write_dp_raw(swd_target_t *target, uint8_t reg, uint32_t value) {
     uint8_t request = make_swd_request(false, false, reg);
-    swd_error_t err;
+    swd_error_t err = SWD_ERROR_WAIT;  // Initialize to WAIT in case retry_count is 0
 
     for (uint retry = 0; retry < target->dap.retry_count; retry++) {
         err = swd_io_raw(target, request, &value, true);
@@ -223,7 +223,7 @@ swd_error_t swd_write_dp_raw(swd_target_t *target, uint8_t reg, uint32_t value) 
 
 swd_error_t swd_read_ap_raw(swd_target_t *target, uint8_t reg, uint32_t *value) {
     uint8_t request = make_swd_request(true, true, reg);
-    swd_error_t err;
+    swd_error_t err = SWD_ERROR_WAIT;  // Initialize to WAIT in case retry_count is 0
 
     for (uint retry = 0; retry < target->dap.retry_count; retry++) {
         err = swd_io_raw(target, request, value, false);
@@ -236,7 +236,7 @@ swd_error_t swd_read_ap_raw(swd_target_t *target, uint8_t reg, uint32_t *value) 
 
 swd_error_t swd_write_ap_raw(swd_target_t *target, uint8_t reg, uint32_t value) {
     uint8_t request = make_swd_request(true, false, reg);
-    swd_error_t err;
+    swd_error_t err = SWD_ERROR_WAIT;  // Initialize to WAIT in case retry_count is 0
 
     for (uint retry = 0; retry < target->dap.retry_count; retry++) {
         err = swd_io_raw(target, request, &value, true);
