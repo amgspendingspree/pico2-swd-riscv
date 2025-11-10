@@ -380,8 +380,7 @@ swd_error_t rp2350_write_mem_block(swd_target_t *target, uint32_t addr,
  * @endcode
  */
 swd_error_t rp2350_execute_progbuf(swd_target_t *target, uint8_t hart_id,
-                                    const uint32_t *instructions, uint8_t count,
-                                    bool postexec);
+                                    const uint32_t *instructions, uint8_t count);
 
 //==============================================================================
 // Code Execution

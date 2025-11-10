@@ -302,8 +302,7 @@ static swd_error_t execute_progbuf_simple(swd_target_t *target, uint8_t hart_id,
  * @brief Public API for program buffer execution
  */
 swd_error_t rp2350_execute_progbuf(swd_target_t *target, uint8_t hart_id,
-                                    const uint32_t *instructions, uint8_t count,
-                                    bool postexec) {
+                                    const uint32_t *instructions, uint8_t count) {
     if (!target || !target->rp2350.initialized) {
         return SWD_ERROR_NOT_INITIALIZED;
     }
@@ -313,7 +312,6 @@ swd_error_t rp2350_execute_progbuf(swd_target_t *target, uint8_t hart_id,
         return SWD_ERROR_INVALID_PARAM;
     }
 
-    (void)postexec;  // Unused - always use simple execution
     return execute_progbuf_simple(target, hart_id, instructions, count);
 }
 
