@@ -9,7 +9,7 @@ Repository: https://github.com/jackdoe/pico2-swd-riscv
 
 ## 0. VIBE CODE WARNING
 
-About 70% of the code is vibe coded; The readme is almost completely generated. I spent many nights with the oscilloscope and the docs and made a working prototype that was able ti do sba/read/write regs and do abstract commands and progbuf, the rest was done with claude code. The tests are qiute [examples/test_suite](comprehensive) and I use the library in my own projects, but, as they say, "dragons beware".
+About 70% of the code is vibe coded; The readme is almost completely generated. I spent many nights with the oscilloscope and the docs and made a working prototype that was able ti do sba/read/write regs and do abstract commands and progbuf, the rest was done with claude code. The tests are qiute [examples/test_suite](comprehensive) and I use the library in my own projects, but, as they say, "hic sunt dracones". I also read the readme and the code didn't notice anything wrong (and removed/unclear the wrong parts).
 
 
 ## 1. ARCHITECTURAL OVERVIEW
@@ -124,8 +124,8 @@ The DM is itself controlled by an external debugger via a Debug Transport Module
 │  │  Command     │  │  Master      │              │
 │  │  Engine      │  │              │              │
 │  └──────┬───────┘  └──────┬───────┘              │
-│         │                 │                       │
-└─────────┼─────────────────┼───────────────────────┘
+│         │                 │                      │
+└─────────┼─────────────────┼──────────────────────┘
           │                 │
           ▼                 ▼
     ┌─────────────┐   ┌──────────────┐
@@ -342,9 +342,9 @@ Power-On → [Default State] → Dormant
                    │                         │
                    └──────────┬──────────────┘
                               ▼
-                        ┌──────────┐
-                        │ Dormant  │
-                        └──────────┘
+                         ┌──────────┐
+                         │ Dormant  │
+                         └──────────┘
 ```
 
 Once activated, the debug port remains in the selected protocol mode until:
@@ -381,8 +381,8 @@ static const uint8_t seq_jtag_to_dormant[] = {
 // Phase 2: Activate SWD mode
 static const uint8_t seq_dormant_to_swd[] = {
     0xff,                                        // Line reset (8 ones)
-    0x92,0xf3,0x09,0x62,0x95,0x2d,0x85,0x86,    // Selection Alert
-    0xe9,0xaf,0xdd,0xe3,0xa2,0x0e,0xbc,0x19,    //   (128 bits)
+    0x92,0xf3,0x09,0x62,0x95,0x2d,0x85,0x86,     // Selection Alert
+    0xe9,0xaf,0xdd,0xe3,0xa2,0x0e,0xbc,0x19,     //   (128 bits)
     0xa0,0xf1,0xff,                              // SWD Activation Code (0x1a)
     0xff,0xff,0xff,0xff,0xff,0xff,0xff, 0xff,    // Line reset (>50 ones)
     0x00                                         // Idle low
@@ -472,7 +472,7 @@ A successful IDCODE read confirms:
 3. The SWCLK frequency is within tolerance
 4. SWDIO signal integrity is sufficient
 
-For RP2350, the IDCODE is `0x4c013477` (RP2350 Debug Port, ARM Designer code 0x23E, Part number 0xC013, Revision 0x4).
+For RP2350, the IDCODE is `0x4c013477`
 
 This defensive activation strategy, while not strictly necessary for fresh power-up scenarios, ensures our library works reliably across the full range of real-world debug connection scenarios—a critical property for a reusable debug library.
 
@@ -711,15 +711,15 @@ Abstract commands can trigger PROGBUF execution through the `postexec` bit (bit 
 
 ```
 ┌──────────────────────────────────────────┐
-│ 1. Debugger writes PROGBUF instructions │
+│ 1. Debugger writes PROGBUF instructions  │
 ├──────────────────────────────────────────┤
 │ 2. Debugger writes DATA0 (optional)      │
 ├──────────────────────────────────────────┤
 │ 3. Abstract command with postexec=1      │
-│    - Transfers DATA0 → GPR (if transfer=1)│
-│    - Executes PROGBUF[0]..PROGBUF[N]     │
-│    - Executes ebreak (returns to DM)      │
-│    - Transfers GPR → DATA0 (if transfer=1)│
+│   - Transfers DATA0 → GPR (if transfer=1)│
+│   - Executes PROGBUF[0]..PROGBUF[N]      │
+│   - Executes ebreak (returns to DM)      │
+│   - Transfers GPR → DATA0 (if transfer=1)│
 └──────────────────────────────────────────┘
 ```
 
@@ -753,7 +753,7 @@ The instruction `csrr s0, dpc` (CSR Read) has the encoding:
 ```
 
 - **funct3=0x2 (CSRRS)**: CSR Read and Set. Since rs1=x0, no bits are set (read-only operation).
-- **CSR 0x7b1**: DPC is defined in RISC-V Debug Spec v0.13, section 4.8.1
+- **CSR 0x7b1**: DPC is defined in RISC-V Debug Spec v0.13, section 4.8.2
 
 **Phase 3: Execute with postexec**
 ```c
@@ -933,41 +933,6 @@ dap_write_mem32(target, DM_SBDATA0, value);     // Write triggers bus write
 
 The write to SBDATA0 initiates the system bus write transaction. The debugger should poll SBCS.sbbusyerror to detect completion (though in practice, pipelined writes are often used).
 
-### 8.F Cache Coherency: The Fundamental Limitation
-
-SBA's most significant limitation is its lack of cache coherency guarantees. Consider this scenario:
-
-```
-Hart 0 executes:        Debugger via SBA:
-  x = 10;                 [reads memory at &x]
-  (value in cache)        → Sees stale value (0)
-```
-
-The Debug Module's bus master accesses main memory, but the hart's cached copy may differ. The RISC-V Debug Specification explicitly states (section 3.12.17):
-
-> "The System Bus Access block is not required to be cache coherent with the hart's view of memory."
-
-#### 8.F.1 Coherency Implications
-
-1. **Stale Reads**: SBA reads may return old values if the hart has written to cache but not flushed to memory.
-
-2. **Invisible Writes**: SBA writes to memory may not be visible to the hart if the address is cached.
-
-3. **No Explicit Cache Operations**: The Debug Module provides no cache flush or invalidate mechanisms via SBA.
-
-4. **Architecture Dependency**: Cache behavior depends on RP2350's Hazard3 cache implementation.
-
-#### 8.F.2 When SBA is Safe
-
-SBA is coherent in these cases:
-
-1. **Uncached Memory Regions**: Stack, MMIO regions, uncached RAM regions
-2. **Hart Halted**: Halted harts make no memory accesses, so cache is quiescent
-3. **Read-Only Data**: If the hart only reads (never writes) an address, SBA reads are coherent
-4. **Known Cache State**: After cache flush (if explicit flush is possible)
-
-Our test suite validates SBA while the hart is running (`test_mem.c:291-347`) by using memory regions known to be uncached.
-
 ### 8.G SBA Error Handling
 
 The SBCS.sberror field reports transaction failures:
@@ -982,23 +947,6 @@ The SBCS.sberror field reports transaction failures:
 ```
 
 Errors are sticky and must be explicitly cleared by writing 1 to SBCS.sberror (W1C = Write-1-to-Clear).
-
-### 8.H Performance Characteristics
-
-SBA performance depends on:
-
-1. **SWD Clock Speed**: Each transaction requires multiple SWD clock cycles
-2. **Bus Latency**: System bus response time varies by address range (ROM vs RAM)
-3. **Debug Module State Machine**: Fixed overhead per transaction (~10 SWD cycles)
-
-Typical performance for 32-bit access at 1 MHz SWD clock:
-- Read: ~40µs per word
-- Write: ~35µs per word
-
-Compare to halt-based access:
-- Halt + read + resume: ~200µs per word
-
-SBA provides approximately 5× speedup for bulk operations, with the added benefit of not disrupting real-time execution.
 
 ## 9. STATE MANAGEMENT AND CACHING
 
@@ -1400,18 +1348,6 @@ write_dcsr(target, hart_id, dcsr_result.value);  // Restore original DCSR
 ```
 
 This ensures subsequent `rp2350_resume()` calls don't single-step.
-
-### 15.B Step Timing Considerations
-
-Single-step execution is significantly slower than free-running:
-- Normal execution: ~1 instruction per clock cycle
-- Single-step: ~5ms per instruction (SWD transaction overhead)
-
-For 1000 instructions:
-- Normal: ~10µs at 100 MHz
-- Single-step: ~5 seconds
-
-Use instruction tracing (see Section 15) for performance-critical analysis.
 
 ## 16. INSTRUCTION TRACING VIA ITERATED SINGLE-STEPPING
 
