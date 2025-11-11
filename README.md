@@ -32,6 +32,7 @@ What do I do in the meanwhile? Sit on the beach? I hate the beach.
 
 Where does it stop?
 
+PS: as the poet said: the price of getting what you want, is getting what you once wanted.
 
 ## 1. ARCHITECTURAL OVERVIEW
 
