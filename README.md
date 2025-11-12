@@ -1,6 +1,6 @@
 # pico2-swd-riscv
 
-A stateful SWD protocol implementation for debugging RP2350 RISC-V cores (Hazard3) from any Raspberry Pi Pico2 (target) using GPIO's on another Pico (probe).
+A stateful SWD protocol implementation for debugging RP2350 RISC-V cores (Hazard3) of any Raspberry Pi Pico2 (target) using GPIO's on another Pico (probe).
 
 ## 0. VIBE CODE WARNING (WRITTEN BY HUMAN)
 
